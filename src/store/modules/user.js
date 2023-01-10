@@ -43,7 +43,7 @@ const actions = {
   login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
-        const { token } = response
+        const { token } = response.data
         commit('SET_TOKEN', token)
         setToken(token)
         resolve()
