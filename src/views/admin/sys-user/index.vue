@@ -510,6 +510,7 @@ export default {
       this.form = {
         userId: undefined,
         deptId: undefined,
+        roleId: undefined,
         username: undefined,
         nickName: undefined,
         password: undefined,
@@ -518,8 +519,7 @@ export default {
         sex: undefined,
         status: '2',
         remark: undefined,
-        postIds: undefined,
-        roleIds: undefined
+        postId: undefined
       }
       this.resetForm('form')
     },
