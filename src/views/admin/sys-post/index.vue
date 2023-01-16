@@ -287,7 +287,7 @@ export default {
         if (valid) {
           this.form.status = parseInt(this.form.status)
           if (this.form.postId !== undefined) {
-            updatePost(this.form, this.form.postId).then(response => {
+            updatePost(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess(response.msg)
                 this.open = false
