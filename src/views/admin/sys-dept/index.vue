@@ -318,7 +318,7 @@ export default {
           this.form.status = parseInt(this.form.status)
           this.form.sort = parseInt(this.form.sort)
           if (this.form.deptId !== undefined) {
-            updateDept(this.form, this.form.deptId).then(response => {
+            updateDept(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess(response.msg)
                 this.open = false
