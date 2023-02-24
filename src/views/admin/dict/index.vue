@@ -89,7 +89,7 @@
 
         <el-table v-loading="loading" :data="typeList" border @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="字典编号" width="80" align="center" prop="id" />
+          <el-table-column label="字典编号" width="80" align="center" prop="dictId" />
           <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
           <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">
             <template slot-scope="scope">
@@ -278,7 +278,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const dictId = row.id || this.ids
+      const dictId = row.dictId || this.ids
       getType(dictId).then(response => {
         this.form = response.data
         this.form.status = String(this.form.status)
@@ -292,7 +292,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.form.status = parseInt(this.form.status)
-          if (this.form.id !== undefined) {
+          if (this.form.dictId !== undefined) {
             updateType(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess(response.msg)
@@ -318,7 +318,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const dictIds = (row.id && [row.id]) || this.ids
+      const dictIds = (row.dictId && [row.dictId]) || this.ids
       this.$confirm('是否确认删除字典编号为"' + dictIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
