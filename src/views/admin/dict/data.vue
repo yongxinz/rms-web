@@ -72,7 +72,7 @@
 
         <el-table v-loading="loading" :data="dataList" border @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="字典编码" width="80" align="center" prop="dictCode" />
+          <el-table-column label="字典编码" width="80" align="center" prop="dictId" />
           <el-table-column label="字典标签" align="center" prop="dictLabel" />
           <el-table-column label="字典键值" align="center" prop="dictValue" />
           <el-table-column label="字典排序" align="center" prop="dictSort" />
@@ -248,7 +248,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        dictCode: undefined,
+        dictId: undefined,
         dictLabel: undefined,
         dictValue: undefined,
         dictSort: 0,
@@ -278,15 +278,15 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.dictCode)
+      this.ids = selection.map(item => item.dictId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const dictCode = row.dictCode || this.ids
-      getData(dictCode).then(response => {
+      const dictId = row.dictId || this.ids
+      getData(dictId).then(response => {
         this.form = response.data
         this.form.status = String(this.form.status)
         this.open = true
@@ -299,7 +299,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.form.status = parseInt(this.form.status)
-          if (this.form.dictCode !== undefined) {
+          if (this.form.dictId !== undefined) {
             updateData(this.form).then(response => {
               if (response.code === 200) {
                 this.msgSuccess(response.msg)
@@ -325,13 +325,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const dictCodes = (row.dictCode && [row.dictCode]) || this.ids
-      this.$confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项?', '警告', {
+      const dictIds = (row.dictId && [row.dictId]) || this.ids
+      this.$confirm('是否确认删除字典编码为"' + dictIds + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delData({ 'ids': dictCodes })
+        return delData({ 'ids': dictIds })
       }).then((response) => {
         if (response.code === 200) {
           this.msgSuccess(response.msg)

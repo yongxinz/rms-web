@@ -114,15 +114,14 @@
               <el-table-column type="selection" width="45" align="center" />
               <el-table-column label="编号" width="75" prop="userId" sortable="custom" />
               <el-table-column label="登录名" width="105" prop="username" sortable="custom" :show-overflow-tooltip="true" />
-              <el-table-column label="昵称" prop="nickName" :show-overflow-tooltip="true" />
               <el-table-column label="部门" prop="dept.deptName" :show-overflow-tooltip="true" />
               <el-table-column label="手机号" prop="phone" width="108" />
               <el-table-column label="状态" width="80" sortable="custom">
                 <template slot-scope="scope">
                   <el-switch
                     v-model="scope.row.status"
-                    active-value="2"
-                    inactive-value="1"
+                    :active-value=2
+                    :inactive-value=1
                     @change="handleStatusChange(scope.row)"
                   />
                 </template>
@@ -186,8 +185,8 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="用户昵称" prop="nickName">
-                <el-input v-model="form.nickName" placeholder="请输入用户昵称" />
+              <el-form-item label="用户名称" prop="username">
+                <el-input v-model="form.username" placeholder="请输入用户名称" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -207,11 +206,6 @@
             <el-col :span="12">
               <el-form-item label="邮箱" prop="email">
                 <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="用户名称" prop="username">
-                <el-input v-model="form.username" placeholder="请输入用户名称" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -396,7 +390,6 @@ export default {
       // 表单校验
       rules: {
         username: [{ required: true, message: '用户名称不能为空', trigger: 'blur' }],
-        nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
         deptId: [{ required: true, message: '归属部门不能为空', trigger: 'blur' }],
         password: [{ required: true, message: '用户密码不能为空', trigger: 'blur' }],
         email: [
@@ -487,7 +480,7 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
-      const text = row.status === '2' ? '启用' : '停用'
+      const text = row.status === 2 ? '启用' : '停用'
       this.$confirm('确认要"' + text + '""' + row.username + '"用户吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -497,7 +490,7 @@ export default {
       }).then(() => {
         this.msgSuccess(text + '成功')
       }).catch(function() {
-        row.status = row.status === '2' ? '1' : '2'
+        row.status = row.status === 2 ? 1 : 2
       })
     },
     // 取消按钮
@@ -512,7 +505,6 @@ export default {
         deptId: undefined,
         roleId: undefined,
         username: undefined,
-        nickName: undefined,
         password: undefined,
         phone: undefined,
         email: undefined,
@@ -563,6 +555,8 @@ export default {
       const userId = row.userId || this.ids
       getUser(userId).then(response => {
         this.form = response.data
+        this.form.sex = String(this.form.sex)
+        this.form.status = String(this.form.status)
         this.open = true
         this.title = '修改用户'
         this.form.password = ''
@@ -593,6 +587,8 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.form.sex = parseInt(this.form.sex)
+          this.form.status = parseInt(this.form.status)
           if (this.form.userId !== undefined) {
             updateUser(this.form).then(response => {
               if (response.code === 200) {
