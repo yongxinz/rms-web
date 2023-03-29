@@ -109,13 +109,13 @@
           <el-table-column label="编码" sortable="custom" prop="roleId" width="80" />
           <el-table-column label="名称" sortable="custom" prop="roleName" :show-overflow-tooltip="true" />
           <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="排序" sortable="custom" prop="roleSort" width="80" />
+          <el-table-column label="排序" sortable="custom" prop="sort" width="80" />
           <el-table-column label="状态" sortable="custom" width="80">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
-                active-value="2"
-                inactive-value="1"
+                :active-value=2
+                :inactive-value=1
                 @change="handleStatusChange(scope.row)"
               />
             </template>
@@ -175,8 +175,8 @@
             <el-form-item label="权限字符" prop="roleKey">
               <el-input v-model="form.roleKey" placeholder="请输入权限字符" :disabled="isEdit" />
             </el-form-item>
-            <el-form-item label="角色顺序" prop="roleSort">
-              <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
+            <el-form-item label="角色顺序" prop="sort">
+              <el-input-number v-model="form.sort" controls-position="right" :min="0" />
             </el-form-item>
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
@@ -338,7 +338,7 @@ export default {
         roleKey: [
           { required: true, message: '权限字符不能为空', trigger: 'blur' }
         ],
-        roleSort: [
+        sort: [
           { required: true, message: '角色顺序不能为空', trigger: 'blur' }
         ]
       }
@@ -426,7 +426,6 @@ export default {
       }).then(function() {
         return changeRoleStatus(row.roleId, row.status)
       }).then((res) => {
-        console.log('res', res)
         this.msgSuccess(res.msg)
       }).catch(function() {
         row.status = row.status === '2' ? '1' : '2'
@@ -452,7 +451,7 @@ export default {
         roleId: undefined,
         roleName: undefined,
         roleKey: undefined,
-        roleSort: 0,
+        sort: 0,
         status: '2',
         menuIds: [],
         deptIds: [],
@@ -505,6 +504,7 @@ export default {
       const roleId = row.roleId || this.ids
       getRole(roleId).then(response => {
         this.form = response.data
+        this.form.status = String(this.form.status)
         this.menuIdsChecked = response.data.menuIds
         this.title = '修改角色'
         this.isEdit = true
@@ -517,6 +517,7 @@ export default {
       this.reset()
       getRole(row.roleId).then(response => {
         this.form = response.data
+        this.form.status = String(this.form.status)
         this.openDataScope = true
         this.title = '分配数据权限'
         this.getRoleDeptTreeselect(row.roleId)
@@ -526,6 +527,7 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.form.status = parseInt(this.form.status)
           if (this.form.roleId !== undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys()
             updateRole(this.form, this.form.roleId).then(response => {
@@ -592,7 +594,7 @@ export default {
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
           const tHeader = ['角色编号', '角色名称', '权限字符', '显示顺序', '状态', '创建时间']
-          const filterVal = ['roleId', 'roleName', 'roleKey', 'roleSort', 'status', 'createdAt']
+          const filterVal = ['roleId', 'roleName', 'roleKey', 'sort', 'status', 'createdAt']
           const list = this.roleList
           const data = formatJson(filterVal, list)
           excel.export_json_to_excel({
